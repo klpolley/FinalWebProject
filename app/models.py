@@ -1,7 +1,8 @@
-from app import db
+from app import db,login
 from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+
 
 requests = db.Table(
     'requests',
@@ -45,6 +46,11 @@ class User(UserMixin, db.Model):
 
     def has_requested(self, user):
         return self.requested.filter(requests.c.receiver_id == user.id).count() > 0
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 class MentorToCourse(db.Model):
