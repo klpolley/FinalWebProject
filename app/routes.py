@@ -3,7 +3,7 @@ from app import app, db
 from app.models import User, Course, Department, MentorToCourse
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm,SearchForm
 
 @app.route('/')
 @app.route('/index')
@@ -113,6 +113,20 @@ def logout():
 @login_required
 def editAccount():
     return render_template('editAccount.html')
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+    form.sDepartment.choices = [(row.id, row.name) for row in Department.query.all()]
+    form.sCourse.choices = [(rowA.id, rowA.name) for rowA in Course.query.all()]
+    if request.method == 'POST':
+
+
+
+        return redirect(url_for('index'))
+    return render_template('search.html',  title='Sign In', form=form)
+
 
 
 
