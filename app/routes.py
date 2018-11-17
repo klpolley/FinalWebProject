@@ -1,11 +1,11 @@
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, render_template
 from app import app, db
 from app.models import User, Course, Department, MentorToCourse
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Hello, World!"
+    return render_template('home.html')
 
 @app.route('/reset_db')
 def reset_db():
@@ -63,3 +63,9 @@ def reset_db():
     db.session.commit()
 
     return redirect(url_for('index'))
+
+@app.route('/')
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
