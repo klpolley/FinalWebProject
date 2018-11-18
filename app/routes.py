@@ -145,5 +145,11 @@ def searchResult(course):
 
     return render_template("searchResult.html", mentors=mentors)
 
+@app.route('/mentorAccount/<username>',methods = ['GET','POST'])
+@login_required
+def mentorAccount(username):
+    current_user=User.query.filter_by(username=username).first()
+
+    return render_template("mentorAccount.html", current_user=current_user)
 
 
