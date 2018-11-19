@@ -161,13 +161,35 @@ def search():
     form.sDepartment.choices = [(row.id, row.name) for row in Department.query.all()]
     form.sCourse.choices = [(rowA.id, rowA.name) for rowA in Course.query.all()]
     if request.method == 'POST':
+        #user = MentorToCourse.query.filter_by(course_id=form.sCourse.data).all()
+        course=Course.query.filter_by(id=form.sCourse.data).first()
+        return redirect(url_for('searchResult', course=course.name))
+    return render_template('search.html', form=form)
 
 
+@app.route('/searchResult/<course>',methods = ['GET','POST'])
+@login_required
+def searchResult(course):
 
-        return redirect(url_for('index'))
-    return render_template('search.html',  title='Sign In', form=form)
+    if course is None:
+        return "no Mentors for this course"
 
+    else:
 
+        c=Course.query.filter_by(name=course).first()
 
+        mentors=list()
+        user = MentorToCourse.query.filter_by(course_id=c.id).all()
+        for hh in user:
+            mentors.append(User.query.filter_by(id=hh.mentor_id).first())
+
+    return render_template("searchResult.html", mentors=mentors)
+
+@app.route('/mentorAccount/<username>',methods = ['GET','POST'])
+@login_required
+def mentorAccount(username):
+    current_user=User.query.filter_by(username=username).first()
+
+    return render_template("mentorAccount.html", current_user=current_user)
 
 
