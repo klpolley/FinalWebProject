@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField,SelectField,SelectMultipleField,DateField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField,SelectField, TextAreaField, SelectMultipleField,DateField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from app.models import User
 
 
@@ -36,3 +36,22 @@ class SearchForm(FlaskForm):
     sDepartment = SelectField('Locations',validators=[DataRequired()], id='select_department')
     sCourse = SelectField('Animal(s)',validators=[DataRequired()], id='select_course')
     submit = SubmitField('Search')
+
+
+class EditAccountForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    name = StringField('Full Name', validators=[DataRequired()])
+    bio = TextAreaField('Bio', validators=[Length(min=0, max=240)])
+    department = SelectField('Department')
+    course = SelectField('Course')
+    submit = SubmitField('Submit')
+
+    def __init__(self, original_username, *args, **kwargs):
+        super(EditAccountForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            user = User.query.filter_by(username=self.username.data).first()
+            if user is not None:
+                raise ValidationError('Please use a different username.')

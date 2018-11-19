@@ -1,9 +1,9 @@
-from flask import flash, redirect, url_for, render_template,request
+from flask import flash, redirect, url_for, render_template, request, jsonify
 from app import app, db
 from app.models import User, Course, Department, MentorToCourse
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, RegistrationForm,SearchForm
+from app.forms import LoginForm, RegistrationForm,SearchForm, EditAccountForm
 
 @app.route('/')
 @app.route('/index')
@@ -109,10 +109,50 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/editAccount', methods=['GET', 'POST'])
+@app.route('/edit_account', methods=['GET', 'POST'])
 @login_required
 def editAccount():
-    return render_template('editAccount.html')
+    form = EditAccountForm(current_user.username)
+    form.department.choices = [(d.id, d.name) for d in Department.query.order_by('name')]
+    form.course.choices = [(c.id, c.name) for c in Course.query.order_by('name')]
+
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.bio = form.bio.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('editAccount'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.bio.data = current_user.bio
+    return render_template('editAccount.html', title='Edit Account', form=form)
+
+@app.route('/account/<username>')
+@login_required
+def account(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
+
+
+@app.route('/course/<dept>')
+def course(dept):
+    courses = Course.query.filter_by(dept_id=dept).all()
+
+    courseArray = []
+
+    for course in courses:
+        courseObj = {}
+        courseObj['id'] = course.id
+        courseObj['num'] = course.number
+        courseObj['name'] = course.name
+        courseArray.append(courseObj)
+
+    return jsonify({'courses' : courseArray})
+
 
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
