@@ -41,10 +41,10 @@ class SearchForm(FlaskForm):
 class EditAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     name = StringField('Full Name', validators=[DataRequired()])
-    bio = TextAreaField('Bio', validators=[Length(min=0, max=240)])
-    department = SelectField('Department')
-    course = SelectField('Course')
-    submit = SubmitField('Submit')
+    bio = TextAreaField('Bio', validators=[DataRequired()])
+    department = SelectField('Department', coerce=int,)
+    course = SelectField('Course', coerce=int,)
+    submit = SubmitField('Save Changes')
 
     def __init__(self, original_username, *args, **kwargs):
         super(EditAccountForm, self).__init__(*args, **kwargs)

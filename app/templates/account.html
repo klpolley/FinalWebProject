@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    {% if user.name %}
+        <h1>{{ user.name }}</h1>
+    {% else %}
+        <h2>{{ user.username }}</h2>
+    {% endif %}
+
+    {% if user.bio %}
+        <p>{{ user.bio }}</p>
+    {% endif %}
+
+    {% if user.courses|length > 0 %}
+        <h4>Mentor for Courses:</h4>
+        {% for assoc in user.courses %}
+            <p>{{ assoc.course.department.abbr }} {{ assoc.course.number }}: {{ assoc.course.name }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if user == current_user %}
+        <p><a href="{{ url_for('edit_account') }}">Edit your account information</a></p>
+        {% if sent|length > 0 %}
+            <h5>Received Help Requests From:</h5>
+            {% for request in sent %}
+                <p>{{ request.name }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% if received|length > 0 %}
+            <h5>Sent Help Requests To:</h5>
+            {% for request in received %}
+                <p>{{ request.name }}</p>
+            {% endfor %}
+        {% endif %}
+
+    {% else %}
+
+    {% endif %}
+
+{% endblock %}
