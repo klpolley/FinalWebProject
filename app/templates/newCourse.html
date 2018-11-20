@@ -3,17 +3,14 @@
 
 {% block app_content %}
 
-    <h1>Edit Account</h1>
+    <h1>Add New Course</h1>
     <div class="row">
         <div class="col-md-4">
             {{ wtf.quick_form(form) }}
         </div>
 
-        <a href="{{ url_for('add_course') }}">Add Course Listing</a>
-
     </div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='courses.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='newDept.js') }}"></script>
 
 {% endblock %}
-

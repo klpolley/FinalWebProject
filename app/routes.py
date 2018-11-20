@@ -3,7 +3,7 @@ from app import app, db
 from app.models import User, Course, Department, MentorToCourse
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, RegistrationForm,SearchForm, EditAccountForm
+from app.forms import LoginForm, RegistrationForm, SearchForm, EditAccountForm, ContactForm, AddCourseForm
 
 @app.route('/')
 @app.route('/index')
@@ -55,8 +55,12 @@ def logout():
 @login_required
 def edit_account():
     form = EditAccountForm(current_user.username)
-    form.department.choices = [(d.id, d.name) for d in Department.query.order_by('name')]
-    form.course.choices = [(c.id, c.name) for c in Course.query.order_by('name')]
+
+    #default to no courses being mentored
+    form.department.choices = [(0, 'NONE')] + [(d.id, d.name) for d in Department.query.order_by('name')]
+    #dept = Department.query.order_by('name').first()
+    #form.course.choices = [(c.id, c.name) for c in Course.query.filter_by(department=dept).order_by('number')]
+    form.course.choices = []
 
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -64,8 +68,9 @@ def edit_account():
         current_user.bio = form.bio.data
 
         course = Course.query.filter_by(id=form.course.data).first()
-        assoc = MentorToCourse(mentor=current_user, course=course)
-        db.session.add(assoc)
+        if MentorToCourse.query.filter_by(mentor=current_user, course=course).count == 0:
+            assoc = MentorToCourse(mentor=current_user, course=course)
+            db.session.add(assoc)
 
         db.session.commit()
         flash('Your changes have been saved.')
@@ -74,16 +79,48 @@ def edit_account():
         form.username.data = current_user.username
         form.name.data = current_user.name
         form.bio.data = current_user.bio
+    else:
+        print(form.course.data)
+        print(form.errors)
+
     return render_template('editAccount.html', title='Edit Account', form=form)
 
-@app.route('/account/<username>')
+@app.route('/account/<username>', methods=['GET', 'POST'])
 @login_required
 def account(username):
     user = User.query.filter_by(username=username).first_or_404()
     sent_reqs = user.requests.all()
     received_reqs = user.requested.all()
 
-    return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs)
+    contact = ContactForm()
+    if contact.validate_on_submit():
+        current_user.send_request(user)
+        db.session.commit()
+        #send email and all that
+        flash('Help request sent to: ' + username)
+
+    return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, contact=contact)
+
+
+@app.route('/add_course', methods = ['GET','POST'])
+def add_course():
+    form = AddCourseForm()
+    form.existing_dept.choices = [(0, 'NEW DEPARTMENT')]+[(row.id, row.name) for row in Department.query.all()]
+
+    if form.validate_on_submit():
+        if form.existing_dept.data != 0:
+            course = Course(dept_id=form.existing_dept.data, number=form.number.data, name=form.name.data)
+            db.session.add(course)
+        else:
+            dept = Department(name=form.new_dept_name.data, abbr=form.new_dept_abbr.data)
+            db.session.add(dept)
+            course = Course(department=dept, number=form.number.data, name=form.name.data)
+            db.session.add(course)
+        db.session.commit()
+        return redirect(url_for('edit_account'))
+
+    return render_template('newCourse.html', form=form)
+
 
 
 @app.route('/course/<dept>')
@@ -106,11 +143,12 @@ def course(dept):
 @login_required
 def search():
     form = SearchForm()
-    form.sDepartment.choices = [(row.id, row.name) for row in Department.query.all()]
-    form.sCourse.choices = [(rowA.id, rowA.name) for rowA in Course.query.all()]
+    form.department.choices = [(row.id, row.name) for row in Department.query.all()]
+    dept = Department.query.order_by('name').first()
+    form.course.choices = [(c.id, c.name) for c in Course.query.filter_by(department=dept).order_by('number')]
     if request.method == 'POST':
         #user = MentorToCourse.query.filter_by(course_id=form.sCourse.data).all()
-        course=Course.query.filter_by(id=form.sCourse.data).first()
+        course=Course.query.filter_by(id=form.course.data).first()
         return redirect(url_for('searchResult', course=course.name))
     return render_template('search.html', form=form)
 
@@ -165,7 +203,7 @@ def reset_db():
     departments = [
         Department(name='Computer Science', abbr='COMP'),
         Department(name='Languages', abbr='LNGS'),
-        Department(name='Mathematics', abbr='MATH'),
+        Department(name='Mathematics', abbr='MATH')
     ]
     db.session.add_all(departments)
 

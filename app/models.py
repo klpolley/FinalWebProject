@@ -37,8 +37,7 @@ class User(UserMixin, db.Model):
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, size)
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 
     def send_request(self, user):
         if not self.has_requested(user):
@@ -46,6 +45,10 @@ class User(UserMixin, db.Model):
 
     def has_requested(self, user):
         return self.requested.filter(requests.c.receiver_id == user.id).count() > 0
+
+    def resolve_request(self, user):
+        if self.has_requested(user):
+            self.requests.remove(user)
 
 
 @login.user_loader
@@ -77,5 +80,5 @@ class Course(db.Model):
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
-    abbr = db.Column(db.String(16))
+    abbr = db.Column(db.String(16), unique=True)
     courses = db.relationship('Course', backref='department', lazy='dynamic')

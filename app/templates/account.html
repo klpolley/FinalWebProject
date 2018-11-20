@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
     {% if user.name %}
@@ -23,19 +24,24 @@
         {% if sent|length > 0 %}
             <h5>Received Help Requests From:</h5>
             {% for request in sent %}
-                <p>{{ request.name }}</p>
+                <p><a href="{{ url_for('account',username=request.username) }}">{{ request.name }}</a></p>
             {% endfor %}
         {% endif %}
 
         {% if received|length > 0 %}
             <h5>Sent Help Requests To:</h5>
             {% for request in received %}
-                <p>{{ request.name }}</p>
+                <p><a href="{{ url_for('account',username=request.username) }}">{{ request.name }}</a></p>
             {% endfor %}
         {% endif %}
 
     {% else %}
-
+        <h4>Contact Me</h4>
+        <div class="row">
+            <div class="col-md-4">
+                {{ wtf.quick_form(contact) }}
+            </div>
+        </div>
     {% endif %}
 
 {% endblock %}
