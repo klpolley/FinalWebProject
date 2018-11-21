@@ -60,7 +60,9 @@ def edit_account():
     form.department.choices = [(0, 'NONE')] + [(d.id, d.name) for d in Department.query.order_by('name')]
     #dept = Department.query.order_by('name').first()
     #form.course.choices = [(c.id, c.name) for c in Course.query.filter_by(department=dept).order_by('number')]
-    form.course.choices = []
+    form.course.choices = [(0, 'NONE')] + [(c.id, c.name) for c in Course.query.order_by('name')]
+
+    form.remove.choices = [(a.course.id, a.course.name) for a in current_user.courses]
 
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -68,9 +70,13 @@ def edit_account():
         current_user.bio = form.bio.data
 
         course = Course.query.filter_by(id=form.course.data).first()
-        if MentorToCourse.query.filter_by(mentor=current_user, course=course).count == 0:
+        if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
             assoc = MentorToCourse(mentor=current_user, course=course)
             db.session.add(assoc)
+
+        for c in form.remove.data:
+            assoc = MentorToCourse.query.filter_by(mentor=current_user, course_id=c).first()
+            db.session.delete(assoc)
 
         db.session.commit()
         flash('Your changes have been saved.')
@@ -79,9 +85,6 @@ def edit_account():
         form.username.data = current_user.username
         form.name.data = current_user.name
         form.bio.data = current_user.bio
-    else:
-        print(form.course.data)
-        print(form.errors)
 
     return render_template('editAccount.html', title='Edit Account', form=form)
 
@@ -118,6 +121,8 @@ def add_course():
             db.session.add(course)
         db.session.commit()
         return redirect(url_for('edit_account'))
+    else:
+        print(form.errors)
 
     return render_template('newCourse.html', form=form)
 
@@ -153,7 +158,7 @@ def search():
     return render_template('search.html', form=form)
 
 
-@app.route('/searchResult/<course>',methods = ['GET','POST'])
+@app.route('/search_result/<course>',methods = ['GET','POST'])
 @login_required
 def searchResult(course):
 

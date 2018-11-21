@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField,SelectField, TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
+    SelectField, TextAreaField, IntegerField, SelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User, Department, Course
 
@@ -43,6 +44,7 @@ class EditAccountForm(FlaskForm):
     bio = TextAreaField('Bio', validators=[DataRequired()])
     department = SelectField('Department', coerce=int)
     course = SelectField('Course', coerce=int)
+    remove = SelectMultipleField('Remove Course', coerce=int)
     submit = SubmitField('Save Changes')
 
     def __init__(self, original_username, *args, **kwargs):
@@ -58,8 +60,8 @@ class EditAccountForm(FlaskForm):
 
 class AddCourseForm(FlaskForm):
     existing_dept = SelectField('Department', coerce=int)
-    new_dept_name = StringField('New Department Name')
-    new_dept_abbr = StringField('New Department Abbreviation')
+    new_dept_name = StringField('New Department Name', validators=[DataRequired()])
+    new_dept_abbr = StringField('New Department Abbreviation', validators=[DataRequired()])
     number = IntegerField('Course Number', validators=[DataRequired()])
     name = StringField('Course Name', validators=[DataRequired()])
     submit = SubmitField('Add Course')
