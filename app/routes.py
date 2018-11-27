@@ -1,7 +1,8 @@
 from flask import flash, redirect, url_for, render_template, request, jsonify
-from app import app, db
+from app import app, db, mail
 from app.models import User, Course, Department, MentorToCourse
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from werkzeug.urls import url_parse
 from app.forms import LoginForm, RegistrationForm, SearchForm, EditAccountForm, ContactForm, AddCourseForm
 
@@ -41,7 +42,7 @@ def register():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('editAccount')
+            next_page = url_for('edit_account')
         return redirect(next_page)
 
     return render_template('register.html', title='Register', form=form)
@@ -100,6 +101,9 @@ def account(username):
         current_user.send_request(user)
         db.session.commit()
         #send email and all that
+        msg = Message("Help Request", recipients=[user.email])
+        msg.body = contact.message.data
+        mail.send(msg)
         flash('Help request sent to: ' + username)
 
     return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, contact=contact)
