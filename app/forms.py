@@ -71,3 +71,7 @@ class AddCourseForm(FlaskForm):
 class ContactForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
     send = SubmitField('Send')
+
+class ResolveRequestForm(FlaskForm):
+    requests = SelectMultipleField('Requests To Resolve', coerce=int)
+    submit = SubmitField('Save Changes')

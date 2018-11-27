@@ -9,7 +9,13 @@
 
         {% for mentor in mentors  %}
 
-            <div><p><a href="{{url_for('account',username=mentor.username)}}">{{mentor.name}}</a></p></div>
+            <div><p><a href="{{url_for('account',username=mentor.username)}}">
+                {% if mentor.name %}
+                    {{ mentor.name }}
+                {% else %}
+                    {{ mentor.username }}
+                {% endif %}
+            </a></p></div>
 
         {% endfor %}
 

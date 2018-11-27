@@ -47,8 +47,8 @@ class User(UserMixin, db.Model):
         return self.requested.filter(requests.c.receiver_id == user.id).count() > 0
 
     def resolve_request(self, user):
-        if self.has_requested(user):
-            self.requests.remove(user)
+        #if self.has_requested(user):
+        self.requested.remove(user)
 
 
 @login.user_loader
