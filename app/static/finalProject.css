@@ -1,0 +1,117 @@
+/* finalProject.css */
+
+/* STYLE GUIDE */
+/*
+    #031A6B - dark blue - navigation bar background, footer background
+    #A4BEDB - light blue - page background
+    #F9D33B - yellow - navigation bar text, footer text, button backgrounds
+    #000000 - black
+    #FFFFFF - white
+ */
+
+@import url('https://fonts.googleapis.com/css?family=Allerta+Stencil|Open+Sans');
+
+
+/* color styling classes */
+
+.bg-dark-blue {
+    background-color: #031A6B;
+}
+
+.bg-light-blue {
+    background-color: #A4BEDB;
+}
+
+.bg-yellow {
+    background-color: #F9D33B;
+}
+
+.text-yellow {
+    color: #F9D33B;
+}
+
+.text-black {
+    color: #000000;
+}
+
+.text-white {
+    color: #FFFFFF;
+}
+
+/* font styling classes */
+
+.font-allerta-stencil {
+    font-family: 'Allerta Stencil', sans-serif;
+}
+
+.font-open-sans {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar-font {
+    font-size: 20px;
+}
+
+/* navbar styling */
+
+.navbar {
+    margin-bottom: 0;
+    color: #F9D33B !important;
+    background-color: #031A6B;
+    z-index: 9999;
+    border: 0;
+    font-size: 20px !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: 'Allerta Stencil', sans-serif;
+}
+
+.navbar-default {
+    background-color: #031A6B;
+    color: #F9D33B;
+}
+
+.nav {
+    background-color: #031A6B;
+    color: #F9D33B;
+}
+
+.nav li a:hover {
+    background-color: #A4BEDB !important;
+    color: #F9D33B !important;
+}
+
+.navbar-custom {
+    background-color: #031A6B !important;
+    color: #F9D33B !important;
+}
+
+.navbar li a,
+.navbar .navbar-brand {
+    color: #F9D33B !important;
+    background-color: #031A6B !important;
+}
+
+.navbar-header .navbar-toggle .icon-bar {
+    background-color: #F9D33B !important;
+}
+
+.navbar-header .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+    background-color: #031A6B;
+}
+
+.btn-custom {
+    color: #F9D33B !important;
+    background-color: #031A6B !important;
+}
+
+.navbar-custom a {
+    color: #F9D33B;
+}
+
+nav-item:hover {
+    color: #F9D33B;
+    background-color: #A4BEDB;
+}
