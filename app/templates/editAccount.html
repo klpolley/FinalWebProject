@@ -9,18 +9,46 @@
 	var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
 	var add_button      = $(".add_field_button"); //Add button ID
 
+
 	var x = 1; //initlal text box count
 	$(add_button).click(function(e){ //on add input button click
 		e.preventDefault();
 		if(x < max_fields){ //max input box allowed
 			x++; //text box increment
-			$(wrapper).append('<div>{{ form.department.label }}<br>{{ form.department(size=1)}}<br>{{form.course.label}}<br>{{form.course(size=1)}}<a href="#" class="remove_field">Remove</a></div>'); //add input box
+			$(wrapper).append('<div>' +
+                '{{ form.department.label }}<br>{{ form.department(size=1, id="department_temp")}}<br>{{form.course.label}}<br>{{form.course(size=1, id="course_temp")}}' +
+                '<a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+            department = document.getElementById("department_temp");
+            department.id = x;
+            course = document.getElementById("course_temp");
+            course.id = "course" + x;
+
+            dept = document.getElementById(x).setAttribute('onchange', 'updater(this)');
 		}
 	});
+
+	updater = (field) => {
+	    dept = field.value;
+	    course_select = document.getElementById("course"+field.id);
+	    fetch('/course/' + dept).then(function (response) {
+            response.json().then(function (data) {
+                var optionHTML = '';
+                for (var course of data.courses) {
+                    optionHTML += '<option value="' + course.id + '">' + course.name + '</option>';
+                }
+                course_select.innerHTML = optionHTML;
+            })
+
+        });
+    };
+
 
 	$(wrapper).on("click",".remove_field", function(e){ //user click on remove text
 		e.preventDefault(); $(this).parent('div').remove(); x--;
 	})
+
+
 });</script>
 
 
