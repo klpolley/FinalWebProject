@@ -9,18 +9,18 @@
     {% endif %}
 
     {% if user.bio %}
-        <p>{{ user.bio }}</p>
+        <p><em>{{ user.bio }}</em></p>
     {% endif %}
 
     {% if user.courses|length > 0 %}
-        <h4>Mentor for Courses:</h4>
+        <h4 class="font-open-sans"><strong>Mentor for Courses:</strong></h4>
         {% for assoc in user.courses %}
-            <p>{{ assoc.course.department.abbr }} {{ assoc.course.number }}: {{ assoc.course.name }}</p>
+            <p><strong>{{ assoc.course.department.abbr }} {{ assoc.course.number }}</strong>: {{ assoc.course.name }}</p>
         {% endfor %}
     {% endif %}
 
     {% if user == current_user %}
-        <p><a href="{{ url_for('edit_account') }}">Edit your account information</a></p>
+        <p><a href="{{ url_for('edit_account') }}"><button class="bg-yellow text-black">Edit your account information</button></a></p>
         {% if sent|length > 0 %}
             <h5>Received Help Requests From:</h5>
             {% for request in sent %}
@@ -39,7 +39,19 @@
         <h4>Contact Me</h4>
         <div class="row">
             <div class="col-md-4">
-                {{ wtf.quick_form(contact) }}
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ contact.message.label }}<br>
+                        {{ contact.message(cols="32", rows="5") }}
+                        {% for error in contact.message.errors %}
+                            <span style="color:red">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ contact.send(class="bg-yellow text-black") }}
+                    </p>
+                </form>
             </div>
         </div>
     {% endif %}

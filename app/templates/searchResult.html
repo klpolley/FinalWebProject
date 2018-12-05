@@ -9,13 +9,13 @@
 
         {% for mentor in mentors  %}
 
-            <div><p><a href="{{url_for('account',username=mentor.username)}}">{{mentor.name}}</a></p></div>
+<div><h3 class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}">{{mentor.name}}</a></h3></div>
 
         {% endfor %}
 
     {% else %}
 
-        <h3>No Mentors for this Course</h3>
+        <h3 class="font-open-sans">No Mentors for this Course</h3>
 
     {% endif %}
 

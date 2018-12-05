@@ -6,10 +6,48 @@
     <h1>Edit Account</h1>
     <div class="row">
         <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}
+                    {% for error in form.username.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32) }}
+                    {% for error in form.name.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.bio.label }}<br>
+                    {{ form.bio(cols="32", rows="5") }}
+                    {% for error in form.bio.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.department.label }}<br>
+                    {{ form.department }}
+                </p>
+                <p>
+                    {{ form.course.label }}<br>
+                    {{ form.course }}
+                </p>
+                <p>
+                    {{ form.remove.label }}<br>
+                    {{ form.remove }}
+                </p>
+                <p>
+                    {{ form.submit(class="bg-yellow text-black") }}
+                </p>
+            </form>
         </div>
 
-        <a href="{{ url_for('add_course') }}">Add Course Listing</a>
+        <a href="{{ url_for('add_course') }}"><button class="bg-yellow text-black">Add Course Listing</button></a>
 
     </div>
 

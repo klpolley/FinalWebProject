@@ -5,7 +5,19 @@
     <h1> Search </h1>
         <div class="row">
             <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
+                <form action="" method="post">
+                    <p>
+                        {{ form.department.label }}<br>
+                        {{ form.department }}
+                    </p>
+                    <p>
+                        {{ form.course.label }}<br>
+                        {{ form.course }}
+                    </p>
+                    <p>
+                        {{ form.submit(class="bg-yellow text-black") }}
+                    </p>
+                </form>
             </div>
         </div>
 

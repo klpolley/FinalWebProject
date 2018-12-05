@@ -6,7 +6,44 @@
     <h1>Add New Course</h1>
     <div class="row">
         <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.existing_dept.label }}<br>
+                    {{ form.existing_dept }}
+                </p>
+                <p>
+                    {{ form.new_dept_name.label }}<br>
+                    {{ form.new_dept_name(size=32) }}
+                    {% for error in form.new_dept_name.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.new_dept_abbr.label }}<br>
+                    {{ form.new_dept_abbr(size=32) }}
+                    {% for error in form.new_dept_abbr.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.number.label }}<br>
+                    {{ form.number(size=20) }}
+                    {% for error in form.number.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.name.label }}<br>
+                    {{ form.name(size=32) }}
+                    {% for error in form.name.errors %}
+                        <span style="color:red">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.submit(class="bg-yellow text-black") }}
+                </p>
+            </form>
         </div>
 
     </div>

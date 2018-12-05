@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Welcome to Mentor Match</h1>
-    <h2>It's our mission to match you with the right person for your study needs. </h2>
+    <section class="bg-light-blue text-black font-open-sans">
+        <div class="container">
+            <h1>Welcome to Mentor Match</h1>
+            <h2>It's our mission to match you with the right person for your study needs. </h2>
+            {% for row in rows %}
+            <br><br><br><br>
+            {% endfor %}
+        </div>
+    </section>
 
 {% endblock %}

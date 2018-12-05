@@ -115,3 +115,8 @@ nav-item:hover {
     color: #F9D33B;
     background-color: #A4BEDB;
 }
+
+.navbar li{
+  padding-left:30px;
+  padding-right:30px;
+}
