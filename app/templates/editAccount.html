@@ -4,70 +4,104 @@
 {% block app_content %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script >$(document).ready(function() {
-	var max_fields      = 5; //maximum input boxes allowed
-	var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
-	var add_button      = $(".add_field_button"); //Add button ID
+    <script>
 
+        //THIS SCRIPT HAS BEEN LEFT IN THIS TEMPLATE BECAUSE THE JINJA PIECES CAUSED ERRORS WHEN IN AN EXTERNAL JS FILE
 
-	var x = 1; //initlal text box count
-	$(add_button).click(function(e){ //on add input button click
-		e.preventDefault();
-		if(x < max_fields){ //max input box allowed
-			x++; //text box increment
-			$(wrapper).append('<div>' +
-                '{{ form.department.label }}<br>{{ form.department(size=1, id="department_temp")}}<br>{{form.course.label}}<br>{{form.course(size=1, id="course_temp")}}' +
-                '<a href="#" class="remove_field">Remove</a></div>'); //add input box
+        $(document).ready(function() {
+            var max_fields      = 5; //maximum input boxes allowed
+            var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
+            var add_button      = $(".add_field_button"); //Add button ID
+            var course_button   = $(".submit_add_courses"); //button to add courses
 
-            department = document.getElementById("department_temp");
-            department.id = x;
-            course = document.getElementById("course_temp");
-            course.id = "course" + x;
+            var x = 0; //initial text box count
+            $(add_button).click(function(e){ //on add input button click
+                e.preventDefault();
+                if(x < max_fields){ //max input box allowed
+                    x++; //text box increment
+                    $(wrapper).append('<div>' +
+                        '{{ form.department.label }}<br>{{ form.department(size=1, id="department_temp")}}<br>{{form.course.label}}<br>{{form.course(size=1, id="course_temp")}}' +
+                        '<a href="#" class="remove_field">Remove</a></div>'); //add input box
 
-            dept = document.getElementById(x).setAttribute('onchange', 'updater(this)');
-		}
-	});
+                    department = document.getElementById("department_temp");
+                    department.id = x;
+                    course = document.getElementById("course_temp");
+                    course.id = "course" + x;
 
-	updater = (field) => {
-	    dept = field.value;
-	    course_select = document.getElementById("course"+field.id);
-	    fetch('/course/' + dept).then(function (response) {
-            response.json().then(function (data) {
-                var optionHTML = '';
-                for (var course of data.courses) {
-                    optionHTML += '<option value="' + course.id + '">' + course.name + '</option>';
+                    dept = document.getElementById(x).setAttribute('onchange', 'updater(this)');
                 }
-                course_select.innerHTML = optionHTML;
-            })
+            });
+
+            updater = (field) => {
+                dept = field.value;
+                course_select = document.getElementById("course"+field.id);
+                fetch('/course/' + dept).then(function (response) {
+                    response.json().then(function (data) {
+                        var optionHTML = '';
+                        for (var course of data.courses) {
+                            optionHTML += '<option value="' + course.id + '">' + course.name + '</option>';
+                        }
+                        course_select.innerHTML = optionHTML;
+                    })
+
+                });
+            };
+
+            $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+                e.preventDefault(); $(this).parent('div').remove(); x--;
+            });
+
+            $(course_button).click(function(){ //on add input button click
+                console.log('hello');
+                var course_ids = [];
+                for (var i = 1; i <= x; i++) {
+                    console.log("course"+i);
+                    course_ids.push(document.getElementById("course"+i).value)
+                }
+
+                json = {"courses":course_ids};
+
+                $.ajax({
+                    type : "POST",
+                    url : "{{ url_for('mentor_courses') }}",
+                    data: JSON.stringify(json),
+                    contentType: 'application/json;charset=UTF-8',
+                }).done(function() {
+                      document.getElementById('submitted').innerHTML = "Courses Added!";
+                });
+                {#$.post(#}
+                {#    '/add_mentor_course',#}
+                {#    {#}
+                {#        "courses": course_ids#}
+                {#    },#}
+                {#    function() {#}
+                {#       #}
+                {##}
+                {#    }#}
+                {#)#}
+            });
 
         });
-    };
-
-
-	$(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-		e.preventDefault(); $(this).parent('div').remove(); x--;
-	})
-
-
-});</script>
-
-
-
+    </script>
 
 
     <h1>Edit Account</h1>
-<div class="input_fields_wrap">
-    <div class="row">
-        <div class="col-md-4">
-            <button class="add_field_button">Add More Fields</button>
-            {{ wtf.quick_form(form) }}
+    <div>
+        <div class="row">
+            <div class="col-md-4">
+                <button class="add_field_button">Add More Fields</button>
+                {{ wtf.quick_form(form) }}
 
+            </div>
+
+            <a href="{{ url_for('add_course') }}">Add Course Listing</a>
         </div>
 
-        <a href="{{ url_for('add_course') }}">Add Course Listing</a>
-
+        <div class="input_fields_wrap">
+            <p id="submitted"></p>
+            <button class="submit_add_courses">Add Courses to Mentor</button>
+        </div>
     </div>
-</div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='courses.js') }}"></script>
 

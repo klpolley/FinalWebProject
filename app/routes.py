@@ -90,6 +90,19 @@ def edit_account():
 
     return render_template('editAccount.html', title='Edit Account', form=form)
 
+@app.route('/add_mentor_course', methods=['GET', 'POST'])
+def mentor_courses():
+
+    courses = request.get_json()["courses"]
+    for c in courses:
+        course = Course.query.filter_by(id=c).first()
+        if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
+            assoc = MentorToCourse(mentor=current_user, course=course)
+            db.session.add(assoc)
+            db.session.commit()
+
+    return jsonify({'please':'work'})
+
 @app.route('/account/<username>', methods=['GET', 'POST'])
 @login_required
 def account(username):
