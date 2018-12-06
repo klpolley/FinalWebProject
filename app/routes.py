@@ -99,7 +99,8 @@ def mentor_courses():
         if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
             assoc = MentorToCourse(mentor=current_user, course=course)
             db.session.add(assoc)
-            db.session.commit()
+
+    db.session.commit()
 
     return jsonify({'please':'work'})
 
