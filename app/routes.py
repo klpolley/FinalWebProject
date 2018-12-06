@@ -1,9 +1,11 @@
 from flask import flash, redirect, url_for, render_template, request, jsonify
-from app import app, db
+from app import app, db, mail
 from app.models import User, Course, Department, MentorToCourse
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from werkzeug.urls import url_parse
-from app.forms import LoginForm, RegistrationForm, SearchForm, EditAccountForm, ContactForm, AddCourseForm
+from app.forms import LoginForm, RegistrationForm, SearchForm, EditAccountForm, ContactForm, AddCourseForm, \
+    ResolveRequestForm
 
 @app.route('/')
 @app.route('/index')
@@ -100,9 +102,29 @@ def account(username):
         current_user.send_request(user)
         db.session.commit()
         #send email and all that
+        msg = Message("Help Request", recipients=[user.email])
+        msg.body = contact.message.data
+        mail.send(msg)
         flash('Help request sent to: ' + username)
 
     return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, contact=contact)
+
+
+@app.route('/resolve_request', methods=['GET', 'POST'])
+@login_required
+def resolve():
+    form = ResolveRequestForm()
+    form.requests.choices = [(r.id, r.name) for r in current_user.requested.all()]
+
+    if form.validate_on_submit():
+        for r in form.requests.data:
+            user = User.query.filter_by(id=r).first()
+            current_user.resolve_request(user)
+
+        db.session.commit()
+        return redirect(url_for('account', username=current_user.username))
+
+    return render_template('resolveRequest.html', form=form)
 
 
 @app.route('/add_course', methods = ['GET','POST'])
