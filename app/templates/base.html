@@ -13,7 +13,7 @@
         {% endif %}
     {% endblock %}
 
-
+    <body>
     {% block navbar %}
         <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
             <div class="navbar-header">
@@ -26,7 +26,7 @@
             </div>
             <div class="collapse navbar-collapse" id="topNavbar">
                 <ul class="nav navbar-nav navbar-expand-sm font-allerta-stencil">
-                    <li><a class="nav-item nav-link text-yellow" href="#">Mentor Match</a></li>
+                    <li><a class="nav-item nav-link text-yellow" href="/">Mentor Match</a></li>
                     {% if current_user.is_anonymous %}
                         <li><a class="nav-item nav-link text-yellow" href="{{ url_for('login') }}">Login</a></li>&nbsp;
                     {% else %}
@@ -41,9 +41,9 @@
         <br><br><br>
         {% endblock %}
 
-
         {% block content %}
             <section class="bg-light-blue text-black font-open-sans">
+
             <div class="container">
 
                 {% with messages = get_flashed_messages() %}
@@ -58,8 +58,21 @@
 
                 {% block app_content %}{% endblock %}
             </div>
-            </section>
 
+            </section>
         {% endblock %}
 
+        <!--<footer class="text-center footer-custom">
+            <div class="row">
+                <div class="col-sm-12">
+                    <a href="#topNavbar" title="To Top">
+                        <span class="glyphicon-chevron-up footer-glyphicon"></span>
+                    </a>
+                    <h3 class="font-allerta-stencil">Mentor Match</h3><br>
+                    <h5 class="font-open-sans">Connecting Student Athletes with Peer Mentors</h5><br>
+                    <p class="font-open-sans">Site Support: <br> <a href="mailto:alang@ithaca.edu" target="_top">MentorMatchSupport@gmail.com</a></p>
+                </div>
+            </div>
+        </footer>-->
+    </body>
 
