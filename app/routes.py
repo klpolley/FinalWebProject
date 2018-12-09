@@ -103,8 +103,20 @@ def account(username):
         db.session.commit()
         #send email and all that
         msg = Message("Help Request", recipients=[user.email])
-        msg.body = contact.message.data
+        sent_msg = Message("Sent Request", recipients=[current_user.email])
+        if current_user.name is None:
+            msg.body = "You have received a help request from " + current_user.username + "\nmessage: " + contact.message.data
+
+        else:
+            msg.body = "You have received a help request from " + current_user.name + "\nmessage: " + contact.message.data
+
+
+
+
+        sent_msg.body = "You sent an email to " + user.name  + " with the following message: \n" + contact.message.data
+
         mail.send(msg)
+        mail.send(sent_msg)
         flash('Help request sent to: ' + username)
 
     return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, contact=contact)
