@@ -4,14 +4,22 @@
 
 
 {% block app_content %}
+    <h1>Search Results</h1>
+
+<p>{{department.name}}<br>{{course.name}}</p>
+
 
     {% if mentors|length > 0 %}
 
         {% for mentor in mentors  %}
 
+
             <div><p><a href="{{url_for('account',username=mentor.username)}}">
+
+
                 {% if mentor.name %}
-                    {{ mentor.name }}
+                    {{ mentor.name }}<br>
+                    {{mentor.bio}}
                 {% else %}
                     {{ mentor.username }}
                 {% endif %}

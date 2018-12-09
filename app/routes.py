@@ -184,19 +184,25 @@ def search():
 @login_required
 def searchResult(course):
 
+
     if course is None:
         return "no Mentors for this course"
 
     else:
 
         c=Course.query.filter_by(name=course).first()
+        department = Department.query.filter_by(id=c.dept_id).first()
+
 
         mentors=list()
         user = MentorToCourse.query.filter_by(course_id=c.id).all()
+
         for hh in user:
             mentors.append(User.query.filter_by(id=hh.mentor_id).first())
 
-    return render_template("searchResult.html", mentors=mentors)
+
+
+    return render_template("searchResult.html", mentors=mentors, department=department, course=c)
 
 
 @app.route('/reset_db')
