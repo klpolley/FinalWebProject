@@ -5,17 +5,19 @@
 
 {% block app_content %}
 
+<h1 class="font-allerta-stencil text-black">Search Results</h1>
+
     {% if mentors|length > 0 %}
 
         {% for mentor in mentors  %}
 
-            <div><h3 class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}">
-                {% if mentor.name %}
+            <div><ul class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}">
+                <li class="navbar-font">{% if mentor.name %}
                     {{ mentor.name }}
                 {% else %}
                     {{ mentor.username }}
-                {% endif %}
-            </a></h3></div>
+                {% endif %}</li>
+            </a></ul></div>
 
         {% endfor %}
 
@@ -25,6 +27,9 @@
 
     {% endif %}
 
-    <a href="{{ url_for('search') }}">New Search</a>
+    <a href="{{ url_for('search') }}"><button class="bg-yellow text-black">New Search</button></a>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 {% endblock %}

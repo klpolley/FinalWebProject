@@ -3,7 +3,7 @@
 
 {% block app_content %}
     {% if user.name %}
-        <h1>{{ user.name }}</h1>
+        <h1 class="font-allerta-stencil">{{ user.name }}</h1>
     {% else %}
         <h2>{{ user.username }}</h2>
     {% endif %}
@@ -45,7 +45,7 @@
                     {% endif %}
                 </a></p>
             {% endfor %}
-            <a href="{{ url_for('resolve') }}">Resolve Requests</a>
+            <a href="{{ url_for('resolve') }}"><button class="bg-yellow text-black">Resolve Requests</button></a>
         {% endif %}
 
     {% else %}

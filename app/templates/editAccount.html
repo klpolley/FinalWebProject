@@ -3,7 +3,7 @@
 
 {% block app_content %}
 
-    <h1>Edit Account</h1>
+    <h1 class="font-allerta-stencil">Edit Account</h1>
     <div class="row">
         <div class="col-md-4">
             <form action="" method="post">
@@ -29,14 +29,15 @@
                         <span style="color:red">[{{ error }}]</span>
                     {% endfor %}
                 </p>
+                <h5 class="font-open-sans"><em>Select a department, then select a course</em></h5>
                 <p>
-                    {{ form.department.label }} &nbsp;&nbsp;&nbsp; {{ form.course.label }}<br>
-                    {{ form.department }} &nbsp; &nbsp;{{ form.course }}
+                    {{ form.department.label }}<br>
+                    {{ form.department }}
                 </p>
-                <!--<p>
+                <p>
                     {{ form.course.label }}<br>
                     {{ form.course }}
-                </p>-->
+                </p>
                 <p>
                     {{ form.remove.label }}<br>
                     {{ form.remove }}
@@ -46,9 +47,10 @@
                 </p>
             </form>
         </div>
-
-        <a href="{{ url_for('add_course') }}"><button class="bg-yellow text-black">Add Course Listing</button></a>
-
+        <div class="col-md-4">
+            <h5 class="font-open-sans"><em>Don't see the department or course you're looking for?</em></h5>
+            <a href="{{ url_for('add_course') }}"><button class="bg-yellow text-black">Add Course Listing</button></a>
+        </div>
     </div>
 
     <script type="text/javascript" src="{{ url_for('static', filename='courses.js') }}"></script>

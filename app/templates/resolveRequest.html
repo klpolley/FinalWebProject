@@ -2,10 +2,19 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1> Resolve Requests </h1>
+    <h1 class="font-allerta-stencil"> Resolve Requests </h1>
         <div class="row">
             <div class="col-md-4">
-                {{ wtf.quick_form(form) }}
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.requests.label }}<br>
+                        {{ form.requests }}
+                    </p>
+                    <p>
+                        {{ form.submit(class="bg-yellow text-black") }}
+                    </p>
+                </form>
             </div>
         </div>
 

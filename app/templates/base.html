@@ -28,7 +28,8 @@
                 <ul class="nav navbar-nav navbar-expand-sm font-allerta-stencil">
                     <li><a class="nav-item nav-link text-yellow" href="/">Mentor Match</a></li>
                     {% if current_user.is_anonymous %}
-                        <li><a class="nav-item nav-link text-yellow" href="{{ url_for('login') }}">Login</a></li>&nbsp;
+                        <li><a class="nav-item nav-link text-yellow" href="{{ url_for('login') }}">Login</a></li>
+                        <li><a class="nav-item nav-link text-yellow" href="{{ url_for('register') }}">Register</a></li>
                     {% else %}
                         <li><a class="nav-item nav-link text-yellow" href="{{ url_for('account', username=current_user.username) }}">Account</a></li>
                         <li><a class="nav-item nav-link text-yellow" href="{{ url_for('search') }}">Search</a></li>
