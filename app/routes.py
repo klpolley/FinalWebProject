@@ -115,7 +115,7 @@ def account(username):
     sent_reqs = user.requests.all()
     received_reqs = user.requested.all()
 
-    courses_sorted = sorted(current_user.courses, key=lambda x: x.course.department.abbr)
+    courses_sorted = sorted(user.courses, key=lambda x: x.course.department.abbr)
 
     contact = ContactForm()
     if contact.validate_on_submit():
@@ -123,8 +123,17 @@ def account(username):
         db.session.commit()
         #send email and all that
         msg = Message("Help Request", recipients=[user.email])
-        msg.body = contact.message.data
+        sent_msg = Message("Sent Request", recipients=[current_user.email])
+        if current_user.name is None:
+            msg.body = "You have received a help request from " + current_user.username + "\nmessage: " + contact.message.data
+
+        else:
+            msg.body = "You have received a help request from " + current_user.name + "\nmessage: " + contact.message.data
+
+        sent_msg.body = "You sent an email to " + user.name  + " with the following message: \n" + contact.message.data
+
         mail.send(msg)
+        mail.send(sent_msg)
         flash('Help request sent to: ' + username)
 
     return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, courses=courses_sorted, contact=contact)
@@ -249,19 +258,25 @@ def search():
 @login_required
 def searchResult(course):
 
+
     if course is None:
         return "no Mentors for this course"
 
     else:
 
         c=Course.query.filter_by(name=course).first()
+        department = Department.query.filter_by(id=c.dept_id).first()
+
 
         mentors=list()
         user = MentorToCourse.query.filter_by(course_id=c.id).all()
+
         for hh in user:
             mentors.append(User.query.filter_by(id=hh.mentor_id).first())
 
-    return render_template("searchResult.html", mentors=mentors)
+
+
+    return render_template("searchResult.html", mentors=mentors, department=department, course=c)
 
 
 @app.route('/reset_db')
