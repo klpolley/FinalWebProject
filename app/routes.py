@@ -59,23 +59,25 @@ def edit_account():
     form = EditAccountForm(current_user.username)
 
     #default to no courses being mentored
-    form.department.choices = [(0, 'NONE')] + [(d.id, d.name) for d in Department.query.order_by('name')]
+    #form.department.choices = [(0, 'NONE')] + [(d.id, d.name) for d in Department.query.order_by('name')]
     #dept = Department.query.order_by('name').first()
     #form.course.choices = [(c.id, c.name) for c in Course.query.filter_by(department=dept).order_by('number')]
-    form.course.choices = [(0, 'NONE')] + [(c.id, c.name) for c in Course.query.order_by('name')]
+    #form.course.choices = [(0, 'NONE')] + [(c.id, c.name) for c in Course.query.order_by('name')]
 
-    form.remove.choices = [(a.course.id, a.course.name) for a in current_user.courses]
+    courses = sorted(current_user.courses, key=lambda x: x.course.department.abbr)
+
+    form.remove.choices = [(a.course.id, a.course.department.abbr + ' ' + str(a.course.number) + ' ' + a.course.name) for a in courses]
 
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.name = form.name.data
         current_user.bio = form.bio.data
 
-        course = Course.query.filter_by(id=form.course.data).first()
-        if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
-            assoc = MentorToCourse(mentor=current_user, course=course)
-            db.session.add(assoc)
-
+        # course = Course.query.filter_by(id=form.course.data).first()
+        # if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
+        #     assoc = MentorToCourse(mentor=current_user, course=course)
+        #     db.session.add(assoc)
+        #
         for c in form.remove.data:
             assoc = MentorToCourse.query.filter_by(mentor=current_user, course_id=c).first()
             db.session.delete(assoc)
@@ -87,8 +89,24 @@ def edit_account():
         form.username.data = current_user.username
         form.name.data = current_user.name
         form.bio.data = current_user.bio
+    else:
+        print(form.errors)
 
     return render_template('editAccount.html', title='Edit Account', form=form)
+
+@app.route('/add_mentor_course', methods=['GET', 'POST'])
+def mentor_courses():
+
+    courses = request.get_json()["courses"]
+    for c in courses:
+        course = Course.query.filter_by(id=c).first()
+        if course is not None and MentorToCourse.query.filter_by(mentor=current_user, course=course).count() == 0:
+            assoc = MentorToCourse(mentor=current_user, course=course)
+            db.session.add(assoc)
+
+    db.session.commit()
+
+    return jsonify({'please':'work'})
 
 @app.route('/account/<username>', methods=['GET', 'POST'])
 @login_required
@@ -96,6 +114,8 @@ def account(username):
     user = User.query.filter_by(username=username).first_or_404()
     sent_reqs = user.requests.all()
     received_reqs = user.requested.all()
+
+    courses_sorted = sorted(user.courses, key=lambda x: x.course.department.abbr)
 
     contact = ContactForm()
     if contact.validate_on_submit():
@@ -110,16 +130,13 @@ def account(username):
         else:
             msg.body = "You have received a help request from " + current_user.name + "\nmessage: " + contact.message.data
 
-
-
-
         sent_msg.body = "You sent an email to " + user.name  + " with the following message: \n" + contact.message.data
 
         mail.send(msg)
         mail.send(sent_msg)
         flash('Help request sent to: ' + username)
 
-    return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, contact=contact)
+    return render_template('account.html', user=user, sent=sent_reqs, received=received_reqs, courses=courses_sorted, contact=contact)
 
 
 @app.route('/resolve_request', methods=['GET', 'POST'])
@@ -140,6 +157,7 @@ def resolve():
 
 
 @app.route('/add_course', methods = ['GET','POST'])
+@login_required
 def add_course():
     form = AddCourseForm()
     form.existing_dept.choices = [(0, 'NEW DEPARTMENT')]+[(row.id, row.name) for row in Department.query.all()]
@@ -163,6 +181,7 @@ def add_course():
 
 
 @app.route('/course/<dept>')
+@login_required
 def course(dept):
     courses = Course.query.filter_by(dept_id=dept).all()
 
@@ -176,6 +195,49 @@ def course(dept):
         courseArray.append(courseObj)
 
     return jsonify({'courses' : courseArray})
+
+@app.route('/depts')
+@login_required
+def departments():
+    depts = Department.query.all()
+
+    deptArray = []
+
+    blank = {
+        'id': 0,
+        'name': 'NONE',
+        'abbr': 'NONE'
+    }
+    deptArray.append(blank)
+
+    for dept in depts:
+        deptObj = {}
+        deptObj['id'] = dept.id
+        deptObj['name'] = dept.name
+        deptObj['abbr'] = dept.abbr
+        deptArray.append(deptObj)
+
+    return jsonify({'departments' : deptArray})
+
+@app.route('/remove_courses')
+@login_required
+def update_remove_courses():
+
+    courses = []
+    associations = current_user.courses
+    for assoc in associations:
+        courses.append(assoc.course)
+
+    courseArray = []
+
+    for course in courses:
+        courseObj = {}
+        courseObj['id'] = course.id
+        courseObj['num'] = course.number
+        courseObj['name'] = course.name
+        courseArray.append(courseObj)
+
+    return jsonify({'courses': courseArray})
 
 
 @app.route('/search', methods=['GET', 'POST'])
