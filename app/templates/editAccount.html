@@ -3,6 +3,11 @@
 
 {% block app_content %}
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='mentorCourses.js') }}"></script>
+
+
     <h1 class="font-allerta-stencil">Edit Account</h1>
     <div class="row">
         <div class="col-md-4">
@@ -29,15 +34,6 @@
                         <span style="color:red">[{{ error }}]</span>
                     {% endfor %}
                 </p>
-                <h5 class="font-open-sans"><em>Select a department, then select a course</em></h5>
-                <p>
-                    {{ form.department.label }}<br>
-                    {{ form.department }}
-                </p>
-                <p>
-                    {{ form.course.label }}<br>
-                    {{ form.course }}
-                </p>
                 <p>
                     {{ form.remove.label }}<br>
                     {{ form.remove }}
@@ -47,13 +43,19 @@
                 </p>
             </form>
         </div>
-        <div class="col-md-4">
-            <h5 class="font-open-sans"><em>Don't see the department or course you're looking for?</em></h5>
-            <a href="{{ url_for('add_course') }}"><button class="bg-yellow text-black">Add Course Listing</button></a>
+        <div class="input_fields_wrap">
+            <button class="add_field_button">Add Course to Mentor</button>
+            <p id="submitted"></p>
+        </div>
+        <div style="margin-left: 50px;">
+            <button class="submit_add_courses">Save Course Changes</button>
+            <form action="{{ url_for('add_course')}}" style="margin: 20px;">
+                <input class="bg-yellow text-black" type="submit" value="Add Course Listing" />
+            </form>
         </div>
     </div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='courses.js') }}"></script>
+    </div>
 
 {% endblock %}
 

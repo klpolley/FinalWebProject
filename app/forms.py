@@ -42,9 +42,9 @@ class EditAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     name = StringField('Full Name', validators=[DataRequired()])
     bio = TextAreaField('Bio', validators=[DataRequired()])
-    department = SelectField('Department', coerce=int)
-    course = SelectField('Course', coerce=int)
-    remove = SelectMultipleField('Remove Course', coerce=int)
+    #department = SelectField('Department', coerce=int)
+    #course = SelectField('Course', coerce=int)
+    remove = SelectMultipleField('Remove Course to Mentor', coerce=int)
     submit = SubmitField('Save Changes')
 
     def __init__(self, original_username, *args, **kwargs):

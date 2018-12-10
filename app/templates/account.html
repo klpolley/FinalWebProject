@@ -12,9 +12,9 @@
         <p><em>{{ user.bio }}</em></p>
     {% endif %}
 
-    {% if user.courses|length > 0 %}
+    {% if courses|length > 0 %}
         <h4 class="font-open-sans"><strong>Mentor for Courses:</strong></h4>
-        {% for assoc in user.courses %}
+        {% for assoc in courses %}
             <p><strong>{{ assoc.course.department.abbr }} {{ assoc.course.number }}</strong>: {{ assoc.course.name }}</p>
         {% endfor %}
     {% endif %}

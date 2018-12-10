@@ -4,8 +4,12 @@
 
 
 {% block app_content %}
+    <h1>Search Results</h1>
 
-<h1 class="font-allerta-stencil text-black">Search Results</h1>
+    <p>{{department.name}}<br>{{course.name}}</p>
+
+
+    <h1 class="font-allerta-stencil text-black">Search Results</h1>
 
     {% if mentors|length > 0 %}
 
@@ -13,7 +17,8 @@
 
             <div><ul class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}">
                 <li class="navbar-font">{% if mentor.name %}
-                    {{ mentor.name }}
+                    {{ mentor.name }}<br>
+                    {{ mentor.bio }}
                 {% else %}
                     {{ mentor.username }}
                 {% endif %}</li>
