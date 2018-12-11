@@ -126,11 +126,13 @@ def account(username):
         sent_msg = Message("Sent Request", recipients=[current_user.email])
         if current_user.name is None:
             msg.body = "You have received a help request from " + current_user.username + "\nmessage: " + contact.message.data
-
         else:
             msg.body = "You have received a help request from " + current_user.name + "\nmessage: " + contact.message.data
 
-        sent_msg.body = "You sent an email to " + user.name  + " with the following message: \n" + contact.message.data
+        if user.name is None:
+            sent_msg.body = "You sent an email to " + user.username + " with the following message: \n" + contact.message.data
+        else:
+            sent_msg.body = "You sent an email to " + user.name  + " with the following message: \n" + contact.message.data
 
         mail.send(msg)
         mail.send(sent_msg)
