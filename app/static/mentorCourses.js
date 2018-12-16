@@ -97,7 +97,7 @@ $(document).ready(function() {
                     response.json().then(function (data) {
                         var optionHTML = '';
                         for (var course of data.courses) {
-                            optionHTML += '<option value="' + course.id + '">' + course.name + '</option>';
+                            optionHTML += '<option value="' + course.id + '">' + course.dept + ' ' + course.num + ' ' + course.name + '</option>';
                         }
                         remove_field.innerHTML = optionHTML;
                     })
