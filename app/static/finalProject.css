@@ -155,3 +155,7 @@ html, body {
 .footer-glyphicon {
     color: #F9D33B;
 }
+
+.make_link_yellow a {
+    color: #F9D33B;
+}

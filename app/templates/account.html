@@ -5,7 +5,7 @@
     {% if user.name %}
         <h1 class="font-allerta-stencil">{{ user.name }}</h1>
     {% else %}
-        <h2>{{ user.username }}</h2>
+        <h2 class="font-allerta-stencil">{{ user.username }}</h2>
     {% endif %}
 
     {% if user.bio %}
@@ -24,7 +24,7 @@
         {% if sent|length > 0 %}
             <h5>Received Help Requests From:</h5>
             {% for request in sent %}
-                <p><a href="{{ url_for('account',username=request.username) }}">
+                <p><a href="{{ url_for('account',username=request.username) }}" style="color: #F9D33B">
                     {% if request.name %}
                         {{ request.name }}
                     {% else %}
@@ -37,7 +37,7 @@
         {% if received|length > 0 %}
             <h5>Sent Help Requests To:</h5>
             {% for request in received %}
-                <p><a href="{{ url_for('account',username=request.username) }}">
+                <p><a href="{{ url_for('account',username=request.username) }}" style="color: #F9D33B">
                     {% if request.name %}
                         {{ request.name }}
                     {% else %}
