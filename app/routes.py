@@ -230,13 +230,16 @@ def update_remove_courses():
     for assoc in associations:
         courses.append(assoc.course)
 
+    courseSort = sorted(courses, key=lambda x: x.department.abbr)
+
     courseArray = []
 
-    for course in courses:
+    for course in courseSort:
         courseObj = {}
         courseObj['id'] = course.id
         courseObj['num'] = course.number
         courseObj['name'] = course.name
+        courseObj['dept'] = course.department.abbr
         courseArray.append(courseObj)
 
     return jsonify({'courses': courseArray})
