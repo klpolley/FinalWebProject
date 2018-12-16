@@ -12,7 +12,7 @@ $(document).ready(function() {
             $(wrapper).append('<div>' +
                     '<p>Department</p><select name="department" id="department_temp"></select>' +
                     '<p>Course</p><select name="course" id="course_temp"></select>' +
-                    '<a href="#" class="remove_field">Remove</a></div>'); //add input box
+                    '<a href="#" class="remove_field" id="make_link_yellow">Remove</a></div>'); //add input box
 
             department = document.getElementById("department_temp");
             department.id = x;
