@@ -4,21 +4,21 @@
 
 
 {% block app_content %}
-    <h1>Search Results</h1>
+    <h3 class="font-allerta-stencil">Search Results for:</h3>
 
     <p>{{department.name}}<br>{{course.name}}</p>
 
 
-    <h1 class="font-allerta-stencil text-black">Search Results</h1>
+    <h1 class="font-allerta-stencil text-black">Results</h1>
 
     {% if mentors|length > 0 %}
 
         {% for mentor in mentors  %}
 
-            <div><ul class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}">
+            <div><ul class="font-open-sans"><a href="{{url_for('account',username=mentor.username)}}" style="color: #031A6B">
                 <li class="navbar-font">{% if mentor.name %}
                     {{ mentor.name }}<br>
-                    {{ mentor.bio }}
+                    <span style="font-size: small">{{ mentor.bio }}</span>
                 {% else %}
                     {{ mentor.username }}
                 {% endif %}</li>
